@@ -22,7 +22,7 @@ def clean(text):
     text = re.sub(r'<br\s*/?>', '; ', text, flags=re.I)
     text = re.sub(r'<[^>]+>', '', text)
     text = text.replace('**', '').replace('\\#', '#').replace('\u00a0', ' ')
-    text = text.replace('–', '-').replace('—', '-')
+    text = text.replace('–', '-').replace('\u2014', '-')
     return re.sub(r'[ \t]+', ' ', text).strip(' #\t\r\n')
 
 
