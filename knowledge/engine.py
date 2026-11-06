@@ -8,6 +8,7 @@ import re
 from .extract import extract, fact_key, value_key, PERCENT
 from .text import clean, norm, tokens, passages, canonical_url, question_date, normalize_question
 from .types import Answer, Conflict, Source
+from .security import instruction_signals
 
 
 @dataclass
@@ -23,11 +24,21 @@ class View:
 class TemporalKnowledge:
     def __init__(self):
         self._views = {}
+        self._quarantined = {}
         self._conflict_cache = None
 
     def ingest(self, snapshot):
         date.fromisoformat(snapshot.taken_on)
-        pages = {canonical_url(p.url): p for p in snapshot.pages}
+        pages, rejected = {}, []
+        for p in snapshot.pages:
+            signals = instruction_signals(p.title, p.markdown)
+            if signals:
+                rejected.append((p.url, signals))
+                continue
+            pages[canonical_url(p.url)] = p
+        # Quarantine before every consumer, including raw-page branch/link paths.
+        # Keep reason labels for audit; do not echo attacker-controlled payloads.
+        self._quarantined[snapshot.taken_on] = tuple(rejected)
         facts, chunks = [], []
         for p in pages.values():
             facts.extend(extract(p, snapshot.snapshot_id))

@@ -60,4 +60,6 @@ Run the independent, synthetic regression suite:
 python3 -m unittest discover -s tests -v
 ```
 
+See [SECURITY_REVIEW.md](SECURITY_REVIEW.md) for the prompt-injection audit and adversarial tests.
+
 See [NOTES.md](NOTES.md) for architecture, source precedence, temporal semantics, tradeoffs, and evaluation caveats. See [VALIDATION.md](VALIDATION.md) for measured results.
