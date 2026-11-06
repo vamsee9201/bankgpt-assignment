@@ -1,0 +1,13 @@
+.local/
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+snapshots/
+snapshots_zip/
+results/
+*.zip
+*.pdf
+.DS_Store
